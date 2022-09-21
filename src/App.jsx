@@ -2,15 +2,7 @@ import { useState } from "react";
 import "./style/style.css";
 
 function App() {
-  const id = new Date().getTime().toString();
-
-  const [list, setList] = useState([
-    {
-      id: "1",
-      title: "hello",
-    },
-  ]);
-
+  const [list, setList] = useState(["hello"]);
   const [name, setName] = useState("");
 
   const handleSubmit = (e) => {
@@ -40,9 +32,11 @@ function App() {
           {list.length > 0 ? (
             <section>
               {list.map((item) => {
+                const id = new Date().getTime().toString();
+
                 return (
-                  <article className="list__card" key={item.id}>
-                    <h2>{item.title}</h2>
+                  <article key={id} className="list__card">
+                    <h2>{item}</h2>
                     <article className="btn btn--group">
                       <button className="btn btn--edit">edit</button>
                       <button className="btn btn--delete">delete</button>
@@ -50,7 +44,6 @@ function App() {
                   </article>
                 );
               })}
-              <button className="btn btn--clear">Clear All</button>
             </section>
           ) : (
             <h1 className="no-list">Sorry no task list. Add new task list</h1>
