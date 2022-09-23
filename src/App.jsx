@@ -1,20 +1,24 @@
 import { useEffect, useState } from "react";
+import ListCard from "./ListCard";
 import ShowAlert from "./ShowAlert";
 import "./style/style.css";
 
-const getItemLocalStorage = (item, id) => {
-  const newItem = localStorage.getItem("list");
-  if (!newItem) {
-    // localStorage;
+const getItemLocalStorage = () => {
+  let list = localStorage.getItem("list");
+  if (list) {
+    return (list = JSON.parse(localStorage.getItem("list")));
+  } else {
+    return [];
   }
 };
 
 function App() {
+  // const [name, setName] = useState("hello");
   const [name, setName] = useState("");
   const [isEdit, setIsEdit] = useState(false);
   const [setId, setSetId] = useState(null);
 
-  const [list, setList] = useState([]);
+  const [list, setList] = useState(getItemLocalStorage());
   //  {
   //     id: 1,
   //     title: "hello",
@@ -33,8 +37,14 @@ function App() {
     value: "",
   });
 
+  useEffect(() => {
+    localStorage.setItem("list", JSON.stringify(list));
+  }, [list]);
+
   const deleteButton = (id) => {
     // console.log(id);
+    showAlert(true, "a task delete", "danger");
+
     setList((list) => {
       return list.filter((item) => item.id !== id);
     });
@@ -46,10 +56,11 @@ function App() {
     setIsEdit(true);
     setSetId(id);
     setName(specifiedButton.title);
+    showAlert(true, "edit a task", "danger");
   };
 
   const clearAll = () => {
-    showAlert(true, "empty value", "danger");
+    showAlert(true, "removed all tasks", "danger");
     setList([]);
   };
 
@@ -57,7 +68,7 @@ function App() {
     e.preventDefault();
 
     if (!name) {
-      showAlert(true, "empty value", "danger");
+      showAlert(true, "please add a valid value", "danger");
       setIsEdit("");
     } else if (name && isEdit) {
       setList(
@@ -76,7 +87,7 @@ function App() {
         id: new Date().getTime().toString(),
         title: name,
       };
-      showAlert(true, "please add a value", "success");
+      showAlert(true, "added a value", "success");
       setList([...list, newList]);
       setName("");
       setIsEdit(false);
@@ -88,13 +99,13 @@ function App() {
   };
 
   return (
-    <main className="App">
-      <section className="task-manager__container">
-        {alert.show && (
-          <ShowAlert showAlert={showAlert} list={list} {...alert} />
-        )}
+    <main className="app">
+      {alert.show && <ShowAlert showAlert={showAlert} list={list} {...alert} />}
 
-        <section className="task-manager__title">Task List Manager</section>
+      <section className="task-manager__container">
+        <section className="task-manager__title">
+          <h1 className="task-manager__heading">Task List Manager</h1>
+        </section>
 
         <form onSubmit={handleSubmit} className="form">
           <label htmlFor="task">
@@ -105,11 +116,12 @@ function App() {
               placeholder="enter the  task list"
               onChange={(e) => setName(e.target.value)}
               value={name}
+              className="input__text"
             />
-            <button className="btn btn--submit">
-              {!isEdit ? "Submit" : "edit"}
-            </button>
           </label>
+          <button className="btn btn--submit">
+            {!isEdit ? "Submit" : "edit"}
+          </button>
         </form>
 
         <section className="list__container">
@@ -117,27 +129,33 @@ function App() {
             <section>
               {list.map((item) => {
                 return (
-                  <article key={item.id} className="list__card">
-                    <h2>{item.title}</h2>
-                    <article className="btn btn--group">
-                      <button
-                        className="btn btn--edit"
-                        onClick={() => editButton(item.id)}
-                      >
-                        edit
-                      </button>
-                      <button
-                        className="btn btn--delete"
-                        onClick={() => deleteButton(item.id)}
-                      >
-                        delete
-                      </button>
-                    </article>
-                  </article>
+                  // <article key={item.id} className="list__card">
+                  //   <h2>{item.title}</h2>
+                  //   <article className="btn btn--group">
+                  //     <button
+                  //       className="btn btn--edit"
+                  //       onClick={() => editButton(item.id)}
+                  //     >
+                  //       edit
+                  //     </button>
+                  //     <button
+                  //       className="btn btn--delete"
+                  //       onClick={() => deleteButton(item.id)}
+                  //     >
+                  //       delete
+                  //     </button>
+                  //   </article>
+                  // </article>
+                  <ListCard
+                    item={item}
+                    key={item.id}
+                    editButton={editButton}
+                    deleteButton={deleteButton}
+                  />
                 );
               })}
               <section className="container">
-                <button className="btn btn-clear" onClick={clearAll}>
+                <button className="btn btn__clear" onClick={clearAll}>
                   clear button
                 </button>
               </section>

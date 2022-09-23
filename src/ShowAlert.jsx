@@ -13,7 +13,9 @@ const ShowAlert = ({ value, msg, list, showAlert }) => {
 
   return (
     <>
-      <section className={`alert alert-${value}`}>{msg}</section>
+      <section className={`alert alert-${value}`}>
+        <p className="alert-text">{msg}</p>
+      </section>
     </>
   );
 };
