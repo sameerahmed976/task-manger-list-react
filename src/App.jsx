@@ -4,6 +4,9 @@ import "./style/style.css";
 
 const getItemLocalStorage = (item, id) => {
   const newItem = localStorage.getItem("list");
+  if (!newItem) {
+    // localStorage;
+  }
 };
 
 function App() {
